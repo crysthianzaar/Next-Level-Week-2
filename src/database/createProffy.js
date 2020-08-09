@@ -1,12 +1,12 @@
-module.exports = async function(db, {proffyValue, classValue, classScheduleValues}) {
-    // inserir dados na tabela proffys
+module.exports = async function(db, { proffyValue, classValue, classScheduleValues }) {  // Exporting a function
+    // Inserting data in the proffys table
     const insertedProffy = await db.run(`
-        INSERT INTO proffys(
+        INSERT INTO proffys (
             name,
             avatar,
             whatsapp,
             bio
-        ) VALUES(
+        ) VALUES (
             "${proffyValue.name}",
             "${proffyValue.avatar}",
             "${proffyValue.whatsapp}",
@@ -16,33 +16,31 @@ module.exports = async function(db, {proffyValue, classValue, classScheduleValue
 
     const proffy_id = insertedProffy.lastID
 
-    //inserir dados na tabela classes
-
-    const insertedClass = await db.run(` 
-            INSERT INTO classes (
-                subject,
-                cost,
-                proffy_id
-            ) VALUES (
-                "${classValue.subject}",
-                "${classValue.cost}",
-                "${proffy_id}"
-            );
+    // Insert data in the classes table
+    const insertedClass = await db.run(`
+        INSERT INTO classes (
+            subject,
+            cost,
+            proffy_id
+        ) VALUES (
+            "${classValue.subject}",
+            "${classValue.cost}",
+            "${proffy_id}"
+        );
     `)
 
     const class_id = insertedClass.lastID
 
-    // Inserir dados na tabela class_schedule
-
+    // Insert data in the class_schedule table
     const insertedAllClassScheduleValues = classScheduleValues.map((classScheduleValue) => {
-        return db.run (`
+        return db.run(`
             INSERT INTO class_schedule (
                 class_id,
                 weekday,
                 time_from,
                 time_to
             ) VALUES (
-                "${class_id},
+                "${class_id}",
                 "${classScheduleValue.weekday}",
                 "${classScheduleValue.time_from}",
                 "${classScheduleValue.time_to}"
@@ -50,7 +48,7 @@ module.exports = async function(db, {proffyValue, classValue, classScheduleValue
         `)
     })
 
-    // aqui vou executar todos o so dbs runs das classes schedules
-    await Promise.all(insertedAllClassScheduleValues)
 
+    // class_schedules db.runs() will be executed here 
+    await Promise.all(insertedAllClassScheduleValues)
 }
